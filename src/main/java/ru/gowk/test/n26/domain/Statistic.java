@@ -7,11 +7,11 @@ import java.math.BigDecimal;
  * @since 11.12.2017
  */
 public class Statistic {
-    public BigDecimal sum;
-    public BigDecimal avg;
-    public BigDecimal max;
-    public BigDecimal min;
-    public long count;
+    private BigDecimal sum;
+    private double avg;
+    private BigDecimal max;
+    private BigDecimal min;
+    private long count;
 //-----------------------------------------------------------------------------
 
     public BigDecimal getSum() {
@@ -22,11 +22,11 @@ public class Statistic {
         this.sum = sum;
     }
 
-    public BigDecimal getAvg() {
+    public double getAvg() {
         return avg;
     }
 
-    public void setAvg(BigDecimal avg) {
+    public void setAvg(double avg) {
         this.avg = avg;
     }
 
@@ -52,6 +52,32 @@ public class Statistic {
 
     public void setCount(long count) {
         this.count = count;
+    }
+//-----------------------------------------------------------------------------
+
+    public void copy(Statistic statistic) {
+        sum = statistic.sum;
+        avg = statistic.avg;
+        max = statistic.max;
+        min = statistic.min;
+        count += statistic.count;
+    }
+
+    public void accumulate(Statistic statistic) {
+        sum = sum.add(statistic.sum);
+        if (max.compareTo(statistic.max) < 0) {
+            max = statistic.max;
+        }
+        if (min.compareTo(statistic.min) > 0) {
+            min = statistic.min;
+        }
+        count += statistic.count;
+    }
+
+    public void calculateAverage() {
+        avg = count == 0 ?
+                0. :
+                sum.doubleValue() / count;
     }
 //-----------------------------------------------------------------------------
 
