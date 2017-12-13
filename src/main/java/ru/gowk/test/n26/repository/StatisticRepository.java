@@ -12,5 +12,5 @@ import java.util.List;
 public interface StatisticRepository {
     void createTransaction(Transaction transaction);
 
-    List<Statistic> getPreliminaryStatistic();
+    Statistic getStatistic();
 }

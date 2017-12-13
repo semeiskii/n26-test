@@ -6,8 +6,7 @@ import ru.gowk.test.n26.domain.Statistic;
 import ru.gowk.test.n26.domain.Transaction;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.List;
+import java.time.Instant;
 
 /**
  * @author Vyacheslav Gorbatykh
@@ -18,29 +17,74 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     @Value("${statistics.period}")
     private int statisticsPeriod;
 
-    private Statistic[] statistics;
-    private int index;
+    private DomainStat[] statistics;
 //-----------------------------------------------------------------------------
 
     @PostConstruct
     public void init() {
-        statistics = new Statistic[statisticsPeriod + 1];
+        statistics = new DomainStat[statisticsPeriod];
+        for (int i = 0; i < statistics.length; i++) {
+            statistics[i] = new DomainStat();
+        }
     }
 //-----------------------------------------------------------------------------
 
     @Override
     public void createTransaction(Transaction transaction) {
-        Statistic statistic = new Statistic();
-        statistic.setSum(transaction.getAmount());
-        statistic.setMin(transaction.getAmount());
-        statistic.setMax(transaction.getAmount());
-        statistic.setCount(1);
-        statistics[index] = statistic;
-        index++;
+        long domain = transaction.getTimestamp() / statisticsPeriod;
+        int index = (int) (transaction.getTimestamp() - domain);
+
+        DomainStat statistic = statistics[index];
+        accumulateTransaction(domain, statistic, transaction);
     }
 
     @Override
-    public List<Statistic> getPreliminaryStatistic() {
-        return Arrays.asList(statistics);
+    public Statistic getStatistic() {
+        Statistic result = new Statistic();
+
+        long currentTime = getCurrentTime();
+        long currentDomain = currentTime / statisticsPeriod;
+        long previousDomain = currentDomain - 1;
+        int currentIndex = (int) (currentTime - currentDomain);
+        for (int i = 0; i < statistics.length; i++) {
+            DomainStat stat = statistics[i];
+            if (i <= currentIndex) {
+                if (stat.getDomain() != currentDomain) {
+                    continue;
+                }
+            } else {
+                if (stat.getDomain() != previousDomain) {
+                    continue;
+                }
+            }
+            accumulateDomainStatistic(result, stat);
+        }
+
+        result.calculateAverage();
+
+        return result;
+    }
+//-----------------------------------------------------------------------------
+
+    private void accumulateTransaction(long domain, DomainStat statistic, Transaction transaction) {
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (statistic) {
+            if (statistic.getDomain() != domain) {
+                statistic.clear();
+                statistic.setDomain(domain);
+            }
+            statistic.accumulate(transaction.getAmount());
+        }
+    }
+
+    private void accumulateDomainStatistic(Statistic result, DomainStat statistic) {
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (statistic) {
+            result.accumulate(statistic);
+        }
+    }
+
+    private long getCurrentTime() {
+        return Instant.now().toEpochMilli();
     }
 }

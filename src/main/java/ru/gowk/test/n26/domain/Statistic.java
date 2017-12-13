@@ -1,5 +1,7 @@
 package ru.gowk.test.n26.domain;
 
+import ru.gowk.test.n26.repository.DomainStat;
+
 import java.math.BigDecimal;
 
 /**
@@ -63,15 +65,15 @@ public class Statistic {
         count += statistic.count;
     }
 
-    public void accumulate(Statistic statistic) {
-        sum = sum.add(statistic.sum);
-        if (max.compareTo(statistic.max) < 0) {
-            max = statistic.max;
+    public void accumulate(DomainStat statistic) {
+        sum = sum.add(statistic.getSum());
+        if (max.compareTo(statistic.getMax()) < 0) {
+            max = statistic.getMax();
         }
-        if (min.compareTo(statistic.min) > 0) {
-            min = statistic.min;
+        if (min.compareTo(statistic.getMin()) > 0) {
+            min = statistic.getMin();
         }
-        count += statistic.count;
+        count += statistic.getCount();
     }
 
     public void calculateAverage() {

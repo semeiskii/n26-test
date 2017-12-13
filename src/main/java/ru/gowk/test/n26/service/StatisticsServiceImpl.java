@@ -4,9 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.gowk.test.n26.domain.Statistic;
 import ru.gowk.test.n26.repository.StatisticRepository;
 
-import java.util.List;
-import java.util.Objects;
-
 /**
  * @author Vyacheslav Gorbatykh
  * @since 11.12.2017
@@ -23,21 +20,6 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public Statistic getStatistic() {
-        Statistic result = new Statistic();
-
-        List<Statistic> statisticList = repository.getPreliminaryStatistic();
-        statisticList.stream()
-                .filter(Objects::nonNull)
-                .forEach(statistic -> {
-                    if (result.getCount() == 0) {
-                        result.copy(statistic);
-                    } else {
-                        result.accumulate(statistic);
-                    }
-                });
-
-        result.calculateAverage();
-
-        return result;
+        return repository.getStatistic();
     }
 }
