@@ -7,5 +7,5 @@ import ru.gowk.n26.domain.Transaction;
  * @since 11.12.2017
  */
 public interface TransactionService {
-    void createTransaction(Transaction transaction);
+    boolean createTransaction(Transaction transaction);
 }

@@ -8,8 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("core")
 public class CoreProperties {
-
     private int statisticPeriod;
+    private int dalayedTransactionsPoolSize = 3;
+//-----------------------------------------------------------------------------
 
     public int getStatisticPeriod() {
         return statisticPeriod;
@@ -17,5 +18,13 @@ public class CoreProperties {
 
     public void setStatisticPeriod(int statisticPeriod) {
         this.statisticPeriod = statisticPeriod;
+    }
+
+    public int getDalayedTransactionsPoolSize() {
+        return dalayedTransactionsPoolSize;
+    }
+
+    public void setDalayedTransactionsPoolSize(int dalayedTransactionsPoolSize) {
+        this.dalayedTransactionsPoolSize = dalayedTransactionsPoolSize;
     }
 }

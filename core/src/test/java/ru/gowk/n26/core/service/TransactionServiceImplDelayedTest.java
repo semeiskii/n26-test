@@ -10,33 +10,37 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.gowk.n26.core.CoreConfiguration;
 import ru.gowk.n26.core.repository.StatisticRepository;
-import ru.gowk.n26.domain.Statistic;
-import ru.gowk.n26.service.StatisticService;
+import ru.gowk.n26.core.util.DateUtil;
+import ru.gowk.n26.domain.Transaction;
+import ru.gowk.n26.service.TransactionService;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
+import static ru.gowk.n26.util.TestUtil.transaction;
 
 /**
  * @author Vyacheslav Gorbatykh
  * @since 11.12.2017
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-public class StatisticServiceImplTest {
+@SpringBootTest("core.statisticPeriod=60000")
+public class TransactionServiceImplDelayedTest {
     @MockBean
     private StatisticRepository repository;
 
     @Autowired
-    private StatisticService service;
+    private TransactionService service;
+    @Autowired
+    private DateUtil dateUtil;
 //-----------------------------------------------------------------------------
 
     @Test
-    public void shouldUseRepositoryGetStatistic() {
-        Statistic statistic = service.getStatistic();
+    public void shouldAddTrasactionInFuture() {
+        Transaction transaction = transaction(12.34, dateUtil.getCurrentTime() + 500);
+        assertTrue(service.createTransaction(transaction));
 
-        Statistic repositoryStatistic = verify(repository).getStatistic();
-
-        assertEquals(repositoryStatistic, statistic);
+        verify(repository, timeout(1000).times(1)).addTransaction(transaction);
     }
 //-----------------------------------------------------------------------------
 

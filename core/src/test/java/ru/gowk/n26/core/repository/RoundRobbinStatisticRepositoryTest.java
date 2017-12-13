@@ -31,7 +31,6 @@ import static ru.gowk.n26.util.TestUtil.transaction;
 @SpringBootTest("core.statisticPeriod=10")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RoundRobbinStatisticRepositoryTest {
-
     @MockBean
     private DateUtil dateUtil;
 
