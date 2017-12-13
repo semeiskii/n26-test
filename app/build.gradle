@@ -1,0 +1,22 @@
+buildscript {
+    ext { springBootVersion = "1.5.9.RELEASE" }
+    repositories { mavenCentral() }
+    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
+}
+
+apply plugin: "org.springframework.boot"
+
+jar {
+    baseName = "n26-test-app"
+    version = "1.0.0"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile project(":common")
+    compile project(":core")
+    compile project(":web")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+

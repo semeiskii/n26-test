@@ -1,29 +1,29 @@
-buildscript {
+subprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    apply plugin: "java"
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+
+    configurations {
+        testArtifacts
     }
-}
 
-apply plugin: "java"
-apply plugin: "org.springframework.boot"
+    task testJar(type: Jar) {
+        baseName = "${project.name}-test"
+        from sourceSets.test.output
+    }
 
-jar {
-    baseName = "n26-test"
-    version =  "1.0.0"
-}
-
-repositories {
-    mavenCentral()
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    artifacts {
+        testArtifacts testJar
+    }
 }

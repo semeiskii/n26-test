@@ -1,0 +1,6 @@
+rootProject.name = "n26-test"
+
+include "common"
+include "core"
+include "web"
+include "app"

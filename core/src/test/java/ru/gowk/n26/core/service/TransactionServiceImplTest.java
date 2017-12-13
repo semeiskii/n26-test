@@ -1,0 +1,46 @@
+package ru.gowk.n26.core.service;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
+import ru.gowk.n26.core.CoreConfiguration;
+import ru.gowk.n26.core.repository.StatisticRepository;
+import ru.gowk.n26.domain.Transaction;
+import ru.gowk.n26.service.TransactionService;
+
+import static org.mockito.Mockito.verify;
+import static ru.gowk.n26.util.TestUtil.transaction;
+
+/**
+ * @author Vyacheslav Gorbatykh
+ * @since 11.12.2017
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class TransactionServiceImplTest {
+    @MockBean
+    private StatisticRepository repository;
+
+    @Autowired
+    private TransactionService service;
+//-----------------------------------------------------------------------------
+
+    @Test
+    public void shouldUseRepositoryAddTrasaction() {
+        Transaction transaction = transaction(12.34, 56);
+        service.createTransaction(transaction);
+
+        verify(repository).addTransaction(transaction);
+    }
+//-----------------------------------------------------------------------------
+
+    @SpringBootApplication
+    @Import(CoreConfiguration.class)
+    static class TestConfiguration {
+    }
+}
