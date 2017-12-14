@@ -14,10 +14,10 @@ The count of 1ms's intervals inside time window is a _window size_
 
 To add new transaction we just add it into appropriate statistic. To determine 
 in which item we should add this transaction, we use:
-> \<timestamp of transaction> % \<window size>
+> (timestamp of transaction) % (window size)
 
 To receive statistics we just summarize all items. It's a loop with iteration count:
-> \<window size>
+> (window size)
 
 Both operations are independent of the count of transactions.
 
