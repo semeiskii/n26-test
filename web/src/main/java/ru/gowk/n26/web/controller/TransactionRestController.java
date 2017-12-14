@@ -17,6 +17,7 @@ import javax.validation.Valid;
  */
 @RestController
 public class TransactionRestController {
+    private static final ResponseEntity RESPONSE_BAD_REQUEST = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     private static final ResponseEntity RESPONSE_NO_CONTENT = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     private static final ResponseEntity RESPONSE_CREATED = ResponseEntity.status(HttpStatus.CREATED).build();
 
@@ -31,11 +32,11 @@ public class TransactionRestController {
     @PostMapping("transactions")
     public ResponseEntity createTransaction(@RequestBody @Valid Transaction transaction, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return RESPONSE_NO_CONTENT;
+            return RESPONSE_BAD_REQUEST;
         }
 
-        service.createTransaction(transaction);
-
-        return RESPONSE_CREATED;
+        return service.createTransaction(transaction) ?
+                RESPONSE_CREATED :
+                RESPONSE_NO_CONTENT;
     }
 }

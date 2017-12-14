@@ -7,5 +7,10 @@ import ru.gowk.n26.domain.Statistic;
  * @since 11.12.2017
  */
 public interface StatisticService {
+    /**
+     * Calculates and returns actual statistic.
+     *
+     * @return actual statistic
+     */
     Statistic getStatistic();
 }

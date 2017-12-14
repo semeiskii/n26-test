@@ -1,5 +1,7 @@
 package ru.gowk.n26.domain;
 
+import ru.gowk.n26.validation.NotZero;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
  */
 public class Transaction {
     @NotNull
+    @NotZero
     private BigDecimal amount;
     @DecimalMin(value = "0", inclusive = false)
     private long timestamp;
